@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'pages/index.dart';
+import 'routes.dart';
 
 class Application extends StatelessWidget {
   @override
@@ -9,7 +9,8 @@ class Application extends StatelessWidget {
       title: 'Spend Tracker',
       theme: ThemeData(primarySwatch: Colors.green),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      routes: routes,
+      initialRoute: '/',
     );
   }
 }

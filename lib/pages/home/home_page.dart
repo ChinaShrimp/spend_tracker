@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spend_tracker/pages/home/widgets/main_menu_widget.dart';
 
 import 'widgets/bar_line_widget.dart';
 import 'widgets/display_totals_widget.dart';
@@ -8,6 +9,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('首页')),
+      drawer: MainMenuWidget(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
