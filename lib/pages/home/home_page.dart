@@ -1,41 +1,37 @@
 import 'package:flutter/material.dart';
 
+import 'widgets/bar_line_widget.dart';
+import 'widgets/display_totals_widget.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('首页')),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          DisplayTotalsWidget(amount: '2400'),
           Container(
-            height: 100,
-            margin: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.green,
-              gradient: LinearGradient(
-                colors: [
-                  Colors.green,
-                  Colors.greenAccent,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(4, 4),
+            padding: EdgeInsets.only(bottom: 10),
+            height: MediaQuery.of(context).size.height - 196,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                BarLineWidget(
+                  label: '取款',
+                  color: Colors.red,
+                  height: 50,
+                  amount: 50,
+                ),
+                BarLineWidget(
+                  label: '存款',
+                  color: Colors.green,
+                  height: 400,
+                  amount: 500,
                 ),
               ],
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '\$1200',
-              style: TextStyle(
-                fontSize: 50,
-                color: Colors.white,
-              ),
             ),
           ),
         ],
