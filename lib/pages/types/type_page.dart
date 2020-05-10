@@ -48,6 +48,8 @@ class _TypePageState extends State<TypePage> {
                         decoration: InputDecoration(labelText: '名称'),
                         validator: (String value) {
                           if (value.isEmpty) return '必填项';
+
+                          return null;
                         },
                         onSaved: (String value) {
                           _data['name'] = value;

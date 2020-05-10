@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spend_tracker/pages/icons/icon_holder_widget.dart';
 
-import '../index.dart';
+import '../icons/icon_holder_widget.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -49,6 +48,8 @@ class _AccountPageState extends State<AccountPage> {
                     decoration: InputDecoration(labelText: '姓名'),
                     validator: (String value) {
                       if (value.isEmpty) return '必填项';
+
+                      return null;
                     },
                     onSaved: (String value) => _data['name'] = value,
                   ),
@@ -61,6 +62,8 @@ class _AccountPageState extends State<AccountPage> {
                       if (value.isEmpty) return '必填项';
 
                       if (double.tryParse(value) == null) return '不合法的数字';
+
+                      return null;
                     },
                     onSaved: (String value) => _data['balance'] = value,
                   ),
