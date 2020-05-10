@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ItemPage extends StatefulWidget {
+  final bool value;
+
+  ItemPage({@required value}) : this.value = (value == 0) ? true : false;
   @override
   _ItemPageState createState() => _ItemPageState();
 }
@@ -9,11 +12,17 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   Map<String, dynamic> _data = Map<String, dynamic>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isDeposit = false;
   DateTime _date = DateTime.now();
 
+  @override
+  void initState() {
+    super.initState();
+
+    _data['isDeposit'] = widget.value;
+  }
+
   String get pageTitle {
-    if (_isDeposit) {
+    if (_data['isDeposit']) {
       return '收入';
     } else {
       return '支出';
@@ -69,12 +78,53 @@ class _ItemPageState extends State<ItemPage> {
                     _data['amount'] = double.parse(value);
                   },
                 ),
+                DropdownButtonFormField<int>(
+                    decoration: InputDecoration(
+                      labelText: '类型',
+                    ),
+                    value: _data['typeId'],
+                    items: [
+                      DropdownMenuItem(
+                        value: 1,
+                        child: Text('租房'),
+                      ),
+                      DropdownMenuItem(
+                        value: 2,
+                        child: Text('吃饭'),
+                      ),
+                    ],
+                    onChanged: (int typeId) {
+                      setState(() {
+                        _data['typeId'] = typeId;
+                      });
+                    }),
+                DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                    labelText: '账户',
+                  ),
+                  value: _data['accountId'],
+                  items: [
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text('信用卡'),
+                    ),
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text('储蓄卡'),
+                    ),
+                  ],
+                  onChanged: (int accountId) {
+                    setState(() {
+                      _data['accountId'] = accountId;
+                    });
+                  },
+                ),
                 Row(
                   children: <Widget>[
                     Checkbox(
-                      value: _isDeposit,
+                      value: _data['isDeposit'],
                       onChanged: (bool value) {
-                        setState(() => _isDeposit = value);
+                        setState(() => _data['isDeposit'] = value);
                       },
                     ),
                     Text('存款'),

@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
                 BarLineWidget(
                   label: '存款',
                   color: Colors.green,
-                  height: 400,
+                  height: 300,
                   amount: 500,
                 ),
               ],
@@ -39,15 +39,35 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: PopupMenuButton(
+          icon: Icon(
+            Icons.add_circle,
+            size: 50,
+            color: Theme.of(context).primaryColor,
+          ),
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                value: 0,
+                child: Text('存款'),
+              ),
+              PopupMenuItem(
+                value: 1,
+                child: Text('取款'),
+              ),
+            ];
+          },
+          onSelected: (int value) {
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ItemPage(),
-              ));
-        },
-        child: Icon(Icons.add),
+                builder: (_) => ItemPage(value: value),
+              ),
+            );
+          },
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
