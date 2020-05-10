@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../database/db_provider.dart';
 import 'account_page.dart';
 
 class AccountsPage extends StatelessWidget {
