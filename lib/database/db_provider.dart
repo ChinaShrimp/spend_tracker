@@ -30,13 +30,13 @@ class DbProvider {
     Database db = await openDatabase(
       path,
       version: 1,
-      onOpen: _onCreate,
+      onCreate: _onCreate,
     );
 
     return db;
   }
 
-  FutureOr<void> _onCreate(Database db) async {
+  FutureOr<void> _onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE Account ("
         "id INTEGER PRIMARY KEY,"
         "name TEXT,"
@@ -66,8 +66,9 @@ class DbProvider {
     final db = await database;
     final result = await db.query('Account');
 
-    List<Account> list =
-        result.isNotEmpty ? result.map((data) => Account.fromMap(data)) : [];
+    List<Account> list = result.isNotEmpty
+        ? result.map((data) => Account.fromMap(data)).toList()
+        : [];
 
     return list;
   }

@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import '../utils/icon_helper.dart';
 
 class Account {
   final int id;
@@ -12,6 +15,12 @@ class Account {
     @required this.codePoint,
     @required this.balance,
   });
+
+  IconData get iconData {
+    if (codePoint == null) return null;
+
+    return IconHelper.getIconDataFromCodePoint(codePoint);
+  }
 
   Map<String, dynamic> toMap() => {
         'id': id,
