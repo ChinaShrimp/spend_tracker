@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../index.dart';
+
 class AccountPage extends StatefulWidget {
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -8,6 +10,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   Map<String, dynamic> _data = Map<String, dynamic>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  IconData _newIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +37,34 @@ class _AccountPageState extends State<AccountPage> {
               child: Column(
                 children: <Widget>[
                   Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                        width: 2,
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
                         color: Colors.blueGrey,
-                      ))),
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        var iconData = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => IconsPage(),
+                          ),
+                        );
+
+                        setState(() {
+                          _newIcon = iconData;
+                        });
+                      },
+                      child: Icon(
+                        _newIcon == null ? Icons.add : _newIcon,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(labelText: '姓名'),
                     validator: (String value) {
