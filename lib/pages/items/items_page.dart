@@ -36,17 +36,53 @@ class ItemsPage extends StatelessWidget {
               Item item = items[index];
 
               var formatter = NumberFormat('#,##0.00', 'en_US');
-              return ListTile(
-                leading: Text(item.description),
-                trailing: Text(formatter.format(item.amount)),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ItemPage(
-                                item: item,
-                              )));
+              return Dismissible(
+                key: ObjectKey(item.id),
+                confirmDismiss: (DismissDirection direction) async {
+                  if (direction == DismissDirection.endToStart) {
+                    // delete item
+                    await dbProvider.deleteItem(item);
+
+                    return true;
+                  }
+
+                  return false;
                 },
+                background: Container(
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          '删除',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    )),
+                child: ListTile(
+                  leading: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                        color: item.isDeposit ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        )),
+                  ),
+                  title: Text(item.description),
+                  trailing: Text(formatter.format(item.amount)),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => ItemPage(
+                                  item: item,
+                                )));
+                  },
+                ),
               );
             },
           );

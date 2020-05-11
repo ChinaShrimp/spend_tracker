@@ -157,6 +157,16 @@ class DbProvider {
     );
   }
 
+  Future<int> deleteItem(Item item) async {
+    final db = await database;
+
+    return await db.delete(
+      'Item',
+      where: 'id = ?',
+      whereArgs: [item.id],
+    );
+  }
+
   Future<List<Item>> getAllItems() async {
     final db = await database;
     final result = await db.query('Item');

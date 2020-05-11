@@ -107,7 +107,8 @@ class _ItemPageState extends State<ItemPage> {
                   onSaved: (String value) => _data['description'] = value,
                 ),
                 TextFormField(
-                  initialValue: _data['amount'].toString(),
+                  initialValue:
+                      _data['amount'] != null ? _data['amount'].toString() : '',
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     labelText: '金额',
