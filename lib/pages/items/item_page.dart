@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../database/db_provider.dart';
+import '../../models/account.dart';
+import '../../models/item_type.dart';
 
 class ItemPage extends StatefulWidget {
   final bool value;
@@ -13,6 +18,8 @@ class _ItemPageState extends State<ItemPage> {
   Map<String, dynamic> _data = Map<String, dynamic>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _date = DateTime.now();
+  List<Account> accounts;
+  List<ItemType> itemTypes;
 
   @override
   void initState() {
@@ -27,6 +34,27 @@ class _ItemPageState extends State<ItemPage> {
     } else {
       return '支出';
     }
+  }
+
+  void _loadAccountsAndItemTypes() async {
+    if (!mounted) return;
+
+    final dbProvider = Provider.of<DbProvider>(context);
+
+    final a = await dbProvider.getAllAccounts();
+    final t = await dbProvider.getAllItemTypes();
+
+    setState(() {
+      accounts = a;
+      itemTypes = t;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _loadAccountsAndItemTypes();
   }
 
   @override
@@ -83,16 +111,14 @@ class _ItemPageState extends State<ItemPage> {
                       labelText: '类型',
                     ),
                     value: _data['typeId'],
-                    items: [
-                      DropdownMenuItem(
-                        value: 1,
-                        child: Text('租房'),
-                      ),
-                      DropdownMenuItem(
-                        value: 2,
-                        child: Text('吃饭'),
-                      ),
-                    ],
+                    items: itemTypes.isNotEmpty
+                        ? itemTypes
+                            .map((itemType) => DropdownMenuItem(
+                                  value: itemType.id,
+                                  child: Text(itemType.name),
+                                ))
+                            .toList()
+                        : [],
                     onChanged: (int typeId) {
                       setState(() {
                         _data['typeId'] = typeId;
@@ -103,16 +129,14 @@ class _ItemPageState extends State<ItemPage> {
                     labelText: '账户',
                   ),
                   value: _data['accountId'],
-                  items: [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text('信用卡'),
-                    ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text('储蓄卡'),
-                    ),
-                  ],
+                  items: accounts.isNotEmpty
+                      ? accounts
+                          .map((account) => DropdownMenuItem(
+                                value: account.id,
+                                child: Text(account.name),
+                              ))
+                          .toList()
+                      : [],
                   onChanged: (int accountId) {
                     setState(() {
                       _data['accountId'] = accountId;
