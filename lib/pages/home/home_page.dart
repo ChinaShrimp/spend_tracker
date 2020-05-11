@@ -50,11 +50,11 @@ class HomePage extends StatelessWidget {
           itemBuilder: (context) {
             return [
               PopupMenuItem(
-                value: 0,
+                value: 1,
                 child: Text('存款'),
               ),
               PopupMenuItem(
-                value: 1,
+                value: 0,
                 child: Text('取款'),
               ),
             ];
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ItemPage(value: value),
+                builder: (_) => ItemPage(isDeposit: value, item: null),
               ),
             );
           },

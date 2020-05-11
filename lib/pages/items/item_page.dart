@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 
 import '../../database/db_provider.dart';
 import '../../models/account.dart';
+import '../../models/item.dart';
 import '../../models/item_type.dart';
 
 class ItemPage extends StatefulWidget {
-  final bool value;
+  Item item;
+  int isDeposit;
 
-  ItemPage({@required value}) : this.value = (value == 0) ? true : false;
+  ItemPage({this.isDeposit, this.item});
   @override
   _ItemPageState createState() => _ItemPageState();
 }
@@ -17,19 +19,28 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   Map<String, dynamic> _data = Map<String, dynamic>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  DateTime _date = DateTime.now();
-  List<Account> accounts;
-  List<ItemType> itemTypes;
+  List<Account> accounts = [];
+  List<ItemType> itemTypes = [];
 
   @override
   void initState() {
     super.initState();
 
-    _data['isDeposit'] = widget.value;
+    if (widget.item != null) {
+      _data = widget.item.toMap();
+    } else {
+      _data = Map<String, dynamic>();
+      if (widget.isDeposit != null) {
+        _data['isDeposit'] = widget.isDeposit;
+      } else {
+        _data['isDeposit'] = false;
+      }
+      _data['date'] = DateTime.now().toIso8601String();
+    }
   }
 
   String get pageTitle {
-    if (_data['isDeposit']) {
+    if (_data['isDeposit'] == 1) {
       return '收入';
     } else {
       return '支出';
@@ -59,6 +70,8 @@ class _ItemPageState extends State<ItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dbProvider = Provider.of<DbProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -69,6 +82,7 @@ class _ItemPageState extends State<ItemPage> {
               if (!_formKey.currentState.validate()) return;
 
               _formKey.currentState.save();
+              dbProvider.createItem(Item.fromMap(_data));
               Navigator.of(context).pop();
             },
           ),
@@ -81,6 +95,7 @@ class _ItemPageState extends State<ItemPage> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  initialValue: _data['description'],
                   decoration: InputDecoration(
                     labelText: '描述',
                   ),
@@ -92,6 +107,7 @@ class _ItemPageState extends State<ItemPage> {
                   onSaved: (String value) => _data['description'] = value,
                 ),
                 TextFormField(
+                  initialValue: _data['amount'].toString(),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     labelText: '金额',
@@ -146,9 +162,10 @@ class _ItemPageState extends State<ItemPage> {
                 Row(
                   children: <Widget>[
                     Checkbox(
-                      value: _data['isDeposit'],
+                      value: _data['isDeposit'] == 1,
                       onChanged: (bool value) {
-                        setState(() => _data['isDeposit'] = value);
+                        var intValue = value ? 1 : 0;
+                        setState(() => _data['isDeposit'] = intValue);
                       },
                     ),
                     Text('存款'),
@@ -159,21 +176,24 @@ class _ItemPageState extends State<ItemPage> {
                     IconButton(
                       icon: Icon(Icons.date_range),
                       onPressed: () async {
+                        var dateTime = DateTime.parse(_data['date']);
+
                         var date = await showDatePicker(
                           context: context,
-                          initialDate: _date,
-                          firstDate: _date.add(Duration(days: -365)),
-                          lastDate: _date.add(Duration(days: 365)),
+                          initialDate: dateTime,
+                          firstDate: dateTime.add(Duration(days: -365)),
+                          lastDate: dateTime.add(Duration(days: 365)),
                         );
 
                         setState(() {
                           if (date == null) return;
 
-                          _date = date;
+                          _data['date'] = date.toIso8601String();
                         });
                       },
                     ),
-                    Text(DateFormat('MM/dd/yyyy').format(_date)),
+                    Text(DateFormat('MM/dd/yyyy')
+                        .format(DateTime.parse(_data['date']))),
                   ],
                 ),
               ],
