@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/account.dart';
+import '../models/item_type.dart';
 
 class DbProvider {
   Database _database;
@@ -43,6 +44,12 @@ class DbProvider {
         "codePoint INTEGER,"
         "balance REAL"
         ")");
+
+    await db.execute("CREATE TABLE ItemType ("
+        "id INTEGER PRIMARY KEY,"
+        "name TEXT,"
+        "codePoint INTEGER"
+        ")");
   }
 
   Future<int> createAccount(Account account) async {
@@ -68,6 +75,33 @@ class DbProvider {
 
     List<Account> list = result.isNotEmpty
         ? result.map((data) => Account.fromMap(data)).toList()
+        : [];
+
+    return list;
+  }
+
+  Future<int> createItemType(ItemType type) async {
+    final db = await database;
+    return await db.insert('ItemType', type.toMap());
+  }
+
+  Future<int> updateItemType(ItemType type) async {
+    final db = await database;
+
+    return await db.update(
+      'ItemType',
+      type.toMap(),
+      where: 'id = ?',
+      whereArgs: [type.id],
+    );
+  }
+
+  Future<List<ItemType>> getAllItemTypes() async {
+    final db = await database;
+    final result = await db.query('ItemType');
+
+    List<ItemType> list = result.isNotEmpty
+        ? result.map((data) => ItemType.fromMap(data)).toList()
         : [];
 
     return list;

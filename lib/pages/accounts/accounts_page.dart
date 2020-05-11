@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../database/db_provider.dart';
@@ -52,11 +53,12 @@ class AccountsPage extends StatelessWidget {
             itemCount: accounts.length,
             itemBuilder: (_, int index) {
               var account = accounts[index];
+              var formatter = NumberFormat('#,##0.00', 'en_US');
 
               return ListTile(
                   leading: Icon(account.iconData),
                   title: Text('${account.name}'),
-                  trailing: Text('\$${account.balance}'),
+                  trailing: Text('\$' + formatter.format(account.balance)),
                   onTap: () {
                     Navigator.push(
                         context,
